@@ -2,19 +2,22 @@ function square(n) {
   return n * n;
 }
 
-function memoizedSquare() {
+function memoize(cb) {
   const cache = {};
-  return (n) => ([n] in cache ? cache[n] : (cache[n] = square(n)));
-  // if ([n] in cache) {
-  //   console.log("returned from cache");
-  //   return cache[n];
-  // }
-  // console.log("calculated fresh");
-  // return (cache[n] = square(n));
+  return (n) => {
+    if ([n] in cache) {
+      console.log("Returned from cache");
+      return cache[n];
+    }
+    const result = cb(n);
+    console.log("Newly calculated");
+    cache[n] = result;
+    return result;
+  };
 }
 
-const calcSquare = memoizedSquare();
+const calcSquare = memoize(square);
 console.log(calcSquare(10));
 console.log(calcSquare(100));
 console.log(calcSquare(1000));
-console.log(calcSquare(100));
+console.log(calcSquare(100)); // Returned from cache 10000
